@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx --no -- commitlint --edit "$1"
+
+commit_msg=$(cat "${1:?Missing commit message file}")
+
+if [[ $commit_msg =~ "feat" ]]; then
+  echo "\nRUN_RECOMMIT_MINOR" >>$1
+elif [[ $commit_msg =~ "fix" ]]; then
+  echo "\nRUN_RECOMMIT_PATCH" >>$1
+else
+  echo "no"
+  exit 0
+fi
